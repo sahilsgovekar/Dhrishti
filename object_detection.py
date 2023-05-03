@@ -1,16 +1,20 @@
 from face_emotion_detection import Face_emotion
+from face_recognition import Face_recognition
 
 import cv2
 import cvlib as cv
 from cvlib.object_detection import draw_bbox    
-from gtts import gTTS
-from playsound import playsound
+# from gtts import gTTS
+# from playsound import playsound
+import numpy as np
 import time
 
 
 class Object_detection():
-    def __init__(self) -> None:
+    def __init__(self, speech) -> None:
+        self.speech = speech
         self.face_emotion = Face_emotion()
+        self.face_recognition = Face_recognition(speech)
 
     def find_objects(self, video):
         while True:
@@ -40,9 +44,33 @@ class Object_detection():
 
             # print(found_items)
             if 'person' in found_items:
+                face_name = self.face_recognition.face_recog()
                 emotion = self.face_emotion.emotion_detect(video)
 
-                say_sentence += f" and person is {emotion}"
+                if face_name == 'no face':
+                    say_sentence += f" and person is {emotion}"
+                    self.speech.Text2Speech(f"new face detected, do you want to add it to database")
+                    message = self.speech.Speech2Text()
+                    if message == "yes":
+                        self.face_recognition.face_taker()
+                        self.face_recognition.face_trainer()
+
+                else:
+                    say_sentence += f" and {face_name} is is person and is {emotion}"
 
             # print(say_sentence)
             return say_sentence
+    
+    def getBrightness(self, cam):
+        ret, frame = cam.read()
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        avg = np.sum(frame)/(frame.shape[0]*frame.shape[1])
+        avg=avg/255
+        if(avg > 0.6):
+            return ("Very bright", avg)
+        if(avg > 0.4):
+            return ("Bright", avg)
+        if(avg>0.2):
+            return ("Dim", avg)
+        else:
+            return ("Dark",avg)
