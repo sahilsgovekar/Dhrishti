@@ -3,7 +3,7 @@ from deepface import DeepFace
 
 class Face_emotion():
     def __init__(self) -> None:
-        self.face_cascade = cv2.CascadeClassifier("packages/haarcascade_frontalface_default.xml")
+        self.face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
 
     def emotion_detect(self, video):
         while video.isOpened():
@@ -16,7 +16,7 @@ class Face_emotion():
                 try:
                     analyze = DeepFace.analyze(frame, actions=['emotion'])
                     analyzed_emotion = analyze['dominant_emotion']
-                    # print(analyzed_emotion)
+                    print(analyzed_emotion)
                     return analyzed_emotion
                 except:
                     # print("no face detected")
@@ -27,5 +27,7 @@ class Face_emotion():
             if key==ord('q'):
                 break
 
-
+# cam = cv2.VideoCapture(0)
+# f = Face_emotion()
+# f.emotion_detect(cam)
 

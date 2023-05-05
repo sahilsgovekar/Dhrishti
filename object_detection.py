@@ -49,7 +49,7 @@ class Object_detection():
 
                 if face_name == 'no face':
                     say_sentence += f" and person is {emotion}"
-                    self.speech.Text2Speech(f"new face detected, do you want to add it to database")
+                    self.speech.Text2Speech(f"unknown face detected, do you want to add it to database")
                     message = self.speech.Speech2Text()
                     if message == "yes":
                         self.face_recognition.face_taker()
@@ -74,3 +74,28 @@ class Object_detection():
             return ("Dim", avg)
         else:
             return ("Dark",avg)
+        
+    def object_find(self, cam):
+        self.speech.Text2Speech("what object you want to find")
+        obj_name = self.speech.Speech2Text()
+
+        while True:
+            found_items = []
+
+            ret, frame = cam.read()
+            # time.sleep(100)
+            bbox, label, conf = cv.detect_common_objects(frame)
+            output_img = draw_bbox(frame, bbox, label, conf)
+
+            cv2.imshow("object detection", output_img)
+
+            for item in label:
+                found_items.append(item)
+                if item == obj_name:
+                    self.speech.Text2Speech("Item found, ahed of you")
+                    break
+
+
+
+
+

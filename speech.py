@@ -21,7 +21,7 @@ class Speech:
             try:
                 converted_text = self.s2t.recognize_google(listned_text)
                 # print(converted_text)
-                return converted_text
+                return converted_text.lower()
             except:
                 # print("error")
                 return "error in recognition"
