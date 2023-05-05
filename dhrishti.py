@@ -5,6 +5,7 @@ from voise_assisted_upi import Voise_assisted_upi
 from face_recognition import Face_recognition
 from audio_chatbot import Audio_chatbot
 import weather
+import video_detection as vd
 
 import cv2
 import datetime
@@ -30,7 +31,7 @@ cam = cv2.VideoCapture(0)
 # speech.Text2Speech(mes)
 
 # upi_transaction.make_payment()
-
+speech.Text2Speech("Dhrishti initilizing")
 listening = False
 
 while True:
@@ -58,6 +59,7 @@ while True:
             brightness = object_detection.getBrightness(cam=cam)
             speech.Text2Speech(f"It is {brightness} here")
 
+
         elif userin == 'chatbot' or userin == 'c':
             audio_chatbot.have_conversation()
         
@@ -67,9 +69,8 @@ while True:
         elif userin == 'weather' or userin == 'w':
             weather_report = weather.weather()
             speech.Text2Speech(weather_report)
-
-
-
-
+        
+        elif userin == "video capture" or userin == "vc":
+            vd.video_capture(cap=cam, speech=speech)
 
 

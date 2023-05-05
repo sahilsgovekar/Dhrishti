@@ -45,7 +45,7 @@ class Object_detection():
             # print(found_items)
             if 'person' in found_items:
                 face_name = self.face_recognition.face_recog()
-                emotion = self.face_emotion.emotion_detect(video)
+                emotion = self.face_emotion.emotion_detect()
 
                 if face_name == 'no face':
                     say_sentence += f" and person is {emotion}"
@@ -97,5 +97,10 @@ class Object_detection():
 
 
 
+# from speech import Speech
+# s = Speech()
+# o = Object_detection(s)
+# cam = cv2.VideoCapture(0)
+# print(o.find_objects(cam))
 
 
