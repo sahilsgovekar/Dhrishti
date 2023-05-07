@@ -28,7 +28,7 @@ class Face_emotion():
             if key==ord('q'):
                 break
 
-# cam = cv2.VideoCapture(0)
+# cam = cv2.VideoCapture(1)
 # f = Face_emotion()
-# f.emotion_detect(cam)
+# f.emotion_detect()
 

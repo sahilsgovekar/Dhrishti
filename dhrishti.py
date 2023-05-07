@@ -6,7 +6,7 @@ from face_recognition import Face_recognition
 from audio_chatbot import Audio_chatbot
 import weather
 import video_detection as vd
-
+# print("test 1")
 import cv2
 import datetime
 
@@ -19,6 +19,9 @@ audio_chatbot = Audio_chatbot(speech)
 
 cam = cv2.VideoCapture(0)
 
+import keyboard
+# while True:
+    
 # message = speech.Speech2Text()
 # print(message)
 # speech.Text2Speech(f"you said {message}")
@@ -32,7 +35,7 @@ cam = cv2.VideoCapture(0)
 
 # upi_transaction.make_payment()
 speech.Text2Speech("Dhrishti initilizing")
-listening = False
+listening = True
 
 while True:
     if not listening:
@@ -42,21 +45,26 @@ while True:
             speech.Text2Speech("i an awake")
     
     else:
+        print("new in/op")
         userin = speech.Speech2Text()
+        interrupt = cv2.waitKey(10)
 
         if userin == "object detect" or userin == "o":
-            mes = object_detection.find_objects(cam)
+            speech.Text2Speech("Detecting object")
+            mes = object_detection.find_objects()
             speech.Text2Speech(mes)
         
         elif userin == 'object find' or userin == 'f':
-            object_detection.object_find(cam)
+            speech.Text2Speech("initating finding object")
+            object_detection.object_find()
 
         elif userin == 'time' or userin == 't':
             currentDT = datetime.datetime.now()
             speech.Text2Speech("The time is {} hours and {} minutes".format(currentDT.hour, currentDT.minute))
         
         elif userin == 'brightness' or userin == 'b':
-            brightness = object_detection.getBrightness(cam=cam)
+            speech.Text2Speech("detecting light")
+            brightness = object_detection.getBrightness()
             speech.Text2Speech(f"It is {brightness} here")
 
 
@@ -72,5 +80,19 @@ while True:
         
         elif userin == "video capture" or userin == "vc":
             vd.video_capture(cap=cam, speech=speech)
+
+        elif userin == 'training new face' or userin == 'q':
+            speech.Text2Speech("initating training new face")
+            face_recognition.face_trainer()
+
+        if keyboard.read_key() == "t":
+            print("emergency trigger")
+            speech.Text2Speech("Emergency trigger service initating")
+            vd.video_capture(cap=cam, speech=speech)
+
+
+    
+
+
 
 

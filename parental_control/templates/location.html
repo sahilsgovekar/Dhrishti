@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Realtime GPS Tracker</title>
+    <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.19.0.min.js"></script>
+    <link rel="stylesheet" href="map.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="bg"></div>
+    <div class="bg-others">
+        <div class="container">
+            <h1>Realtime GPS Tracker with Raspberry PI</h1>
+            <center>
+                <hr
+                    style="height:2px; border:none; color:#ffffff; background-color:#ffffff; width:35%; margin: 0 auto 0 auto;">
+            </center>
+            <center><button class="btn btn-success col-sm-3" id="action">Start Tracking</button></center><br>
+            <center>
+                <div id="map-canvas"></div>
+            </center>
+        </div>
+    </div>
+
+    <script>
+        window.lat = 37.7850;
+        window.lng = -122.4383;
+
+        var map;
+        var mark;
+        var lineCoords = [];
+
+        var initialize = function () {
+            map = new google.maps.Map(document.getElementById('map-canvas'), { center: { lat: lat, lng: lng }, zoom: 12 });
+            mark = new google.maps.Marker({ position: { lat: lat, lng: lng }, map: map });
+        };
+
+        window.initialize = initialize;
+
+        var redraw = function (payload) {
+            if (payload.message.lat) {
+                lat = payload.message.lat;
+                lng = payload.message.lng;
+
+                map.setCenter({ lat: lat, lng: lng, alt: 0 });
+                mark.setPosition({ lat: lat, lng: lng, alt: 0 });
+
+                lineCoords.push(new google.maps.LatLng(lat, lng));
+
+                var lineCoordinatesPath = new google.maps.Polyline({
+                    path: lineCoords,
+                    geodesic: true,
+                    strokeColor: '#2E10FF'
+                });
+
+                lineCoordinatesPath.setMap(map);
+            }
+        };
+
+        var pnChannel = "raspi-tracker";
+
+        var pubnub = new PubNub({
+            publishKey: 'pub-c-64131dd8-c0ff-4392-9352-3e3a06e0d276',
+            subscribeKey: 'sub-c-34f3287b-7b07-4431-ac7a-7f2aa5b2f556'
+        });
+
+        document.querySelector('#action').addEventListener('click', function () {
+            var text = document.getElementById("action").textContent;
+            if (text == "Start Tracking") {
+                pubnub.subscribe({ channels: [pnChannel] });
+                pubnub.addListener({ message: redraw });
+                document.getElementById("action").classList.add('btn-danger');
+                document.getElementById("action").classList.remove('btn-success');
+                document.getElementById("action").textContent = 'Stop Tracking';
+            }
+            else {
+                pubnub.unsubscribe({ channels: [pnChannel] });
+                document.getElementById("action").classList.remove('btn-danger');
+                document.getElementById("action").classList.add('btn-success');
+                document.getElementById("action").textContent = 'Start Tracking';
+            }
+        });
+    </script>
+    
+    <iframe id="my-iframeF"
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3897.6911166797095!2d76.61617007501827!3d12.336564987923511!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3baf7a5fd7f84b71%3A0x56edd06e7a72a40!2sVidyavardhaka%20College%20of%20Engineering!5e0!3m2!1sen!2sin!4v1683332274288!5m2!1sen!2sin"
+        width="600" height="450" style="border:0; margin-left:30%" allowfullscreen="" loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"></iframe>
+    <script>
+        const changeSrcBtn = document.getElementById("action");
+        const myIframe = document.getElementById("my-iframe");
+
+        changeSrcBtn.addEventListener("click", function () {
+            myIframe.src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3897.6911166797104!2d76.61617007472297!3d12.336564987923449!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3baf7a5fd7f84b71%3A0x56edd06e7a72a40!2sVidyavardhaka%20College%20of%20Engineering!5e0!3m2!1sen!2sin!4v1683331860180!5m2!1sen!2sin";
+        });
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=YOUR_GOOGLE_API_KEY&callback=initialize"></script>
+</body>
+
+</html>

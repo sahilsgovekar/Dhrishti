@@ -16,7 +16,8 @@ class Object_detection():
         self.face_emotion = Face_emotion()
         self.face_recognition = Face_recognition(speech)
 
-    def find_objects(self, video):
+    def find_objects(self):
+        video = cv2.VideoCapture(0)
         while True:
             found_items = []
 
@@ -61,7 +62,8 @@ class Object_detection():
             # print(say_sentence)
             return say_sentence
     
-    def getBrightness(self, cam):
+    def getBrightness(self):
+        cam = cv2.VideoCapture(0)
         ret, frame = cam.read()
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         avg = np.sum(frame)/(frame.shape[0]*frame.shape[1])
@@ -75,7 +77,8 @@ class Object_detection():
         else:
             return ("Dark",avg)
         
-    def object_find(self, cam):
+    def object_find(self):
+        cam = cv2.VideoCapture(0)
         self.speech.Text2Speech("what object you want to find")
         obj_name = self.speech.Speech2Text()
 
@@ -93,6 +96,7 @@ class Object_detection():
                 found_items.append(item)
                 if item == obj_name:
                     self.speech.Text2Speech("Item found, ahed of you")
+                    return
                     break
 
 
@@ -101,6 +105,6 @@ class Object_detection():
 # s = Speech()
 # o = Object_detection(s)
 # cam = cv2.VideoCapture(0)
-# print(o.find_objects(cam))
+# print(o.object_find(cam))
 
 
