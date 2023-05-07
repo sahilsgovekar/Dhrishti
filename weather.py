@@ -8,7 +8,7 @@ def weather():
     # City Name 
     CITY = "Mysore"
     # API key 
-    API_KEY = "6553de24eec2f3b09c80938b8965ab9b"
+    API_KEY = "API KEY"
     # upadting the URL
     URL = BASE_URL + "q=" + CITY + "&appid=" + API_KEY
     # HTTP request

@@ -1,5 +1,5 @@
 import openai
-openai.api_key = "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"
+openai.api_key = "API KEY"
 
 class Audio_chatbot:
     def __init__(self, speech) -> None:
